@@ -55,21 +55,20 @@ function createCard(item, index){
 function render(){
   gallery.innerHTML = '';
   GIFTS.forEach((g, i) => gallery.appendChild(createCard(g, i)));
-  // ensure first card is focusable for keyboard users
+  // make first card focusable for keyboard users
   const first = gallery.querySelector('.card');
   if(first) first.tabIndex = 0;
 }
 
 render();
 
-// Keyboard navigation: up/down arrows move between items and snap
+// Keyboard navigation: Up/Down arrows navigate and snap to centered card
 gallery.addEventListener('keydown', (e) => {
   const KEY_UP = 38, KEY_DOWN = 40;
   if(e.keyCode !== KEY_UP && e.keyCode !== KEY_DOWN) return;
   e.preventDefault();
   const cards = Array.from(gallery.querySelectorAll('.card'));
   if(cards.length === 0) return;
-  // find centered card by comparing bounding center
   const centerY = window.innerHeight / 2;
   let activeIndex = cards.findIndex(c => {
     const r = c.getBoundingClientRect();
@@ -83,7 +82,7 @@ gallery.addEventListener('keydown', (e) => {
   cards[nextIndex].focus({preventScroll:true});
 });
 
-// Optional helper for quick adding in console: addGift({name, price, img, url, tag})
+// helper to add items from console: addGift({name, price, img, url, tag})
 function addGift(item){
   GIFTS.push(item);
   render();

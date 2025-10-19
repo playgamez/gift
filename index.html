@@ -11,11 +11,12 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- full-screen particles canvas -->
   <div id="particles-js" aria-hidden="true"></div>
 
   <header class="site-header" aria-hidden="true">
     <h1 class="title">Gift Ideas</h1>
-    <p class="subtitle">Tap an image to open the link — scroll vertically to browse</p>
+    <p class="subtitle">Tap the image to open the link — scroll vertically to browse</p>
   </header>
 
   <main class="gallery-wrap" role="main">
@@ -30,13 +31,23 @@
   <script src="script.js"></script>
 
   <script>
+    /* Denser, full-screen snow effect that scales across devices.
+       Particle count and sizes are moderate to balance appearance + performance. */
     particlesJS("particles-js", {
       "particles": {
-        "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+        "number": { "value": 120, "density": { "enable": true, "value_area": 1200 } },
         "color": { "value": "#ffffff" },
         "shape": { "type": "circle" },
-        "opacity": { "value": 0.8, "random": true },
-        "size": { "value": 4, "random": true },
+        "opacity": {
+          "value": 0.85,
+          "random": true,
+          "anim": { "enable": false }
+        },
+        "size": {
+          "value": 5,
+          "random": true,
+          "anim": { "enable": false }
+        },
         "line_linked": { "enable": false },
         "move": {
           "enable": true,
@@ -50,7 +61,11 @@
       },
       "interactivity": {
         "detect_on": "canvas",
-        "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true },
+        "events": {
+          "onhover": { "enable": false },
+          "onclick": { "enable": false },
+          "resize": true
+        },
         "modes": {}
       },
       "retina_detect": true

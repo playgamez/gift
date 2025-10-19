@@ -3,25 +3,58 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gift List</title>
+  <title>Gift Ideas</title>
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="particles-js" aria-hidden="true"></div>
+
   <header class="site-header" aria-hidden="true">
     <h1 class="title">Gift Ideas</h1>
-    <p class="subtitle">Tap an image to open the link</p>
+    <p class="subtitle">Tap an image to open the link — scroll vertically to browse</p>
   </header>
 
-  <main class="gallery-wrap">
-    <div id="gallery" class="gallery" role="list"></div>
+  <main class="gallery-wrap" role="main">
+    <div id="gallery" class="gallery" role="list" tabindex="0" aria-label="Gift list"></div>
   </main>
 
   <footer class="footer" aria-hidden="true">
     <small class="footer-note">Edit script.js to add items</small>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/particles.min.js"></script>
   <script src="script.js"></script>
+
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.8, "random": true },
+        "size": { "value": 4, "random": true },
+        "line_linked": { "enable": false },
+        "move": {
+          "enable": true,
+          "speed": 1.2,
+          "direction": "bottom",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true },
+        "modes": {}
+      },
+      "retina_detect": true
+    });
+  </script>
 </body>
 </html>

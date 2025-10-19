@@ -1,7 +1,4 @@
-// script.js — fixed toggle behavior (click to open/close immediately; click to select)
-// Fully self-contained and compatible with touch: no pointerdown preventDefault on the button.
-// Menu/backdrop capture clicks so underlying links never open while menu is visible.
-
+// script.js — final fixed version: click to open/close, click an option updates label, marks selected, re-renders
 document.addEventListener('DOMContentLoaded', () => {
   const GIFTS = [
     { name: "Wireless Headset Model X", price: "$79", img: "assets/headset.png", url: "https://example.com/product/headset-x", tag: "Audio" },
@@ -10,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: "Wireless Gaming Mechanical Keyboard", price: "$79", img: "assets/keyboard.png", url: "https://www.amazon.com/ZORNHER-Wireless-Mechanical-Keyboard-Hot-Swappable/dp/B0DS1SV3R1?th=1", tag: "Gaming" }
   ];
 
-  // DOM refs
   const gallery = document.getElementById('gallery');
   const sortBtn = document.getElementById('sortBtn');
   const sortMenu = document.getElementById('sortMenu');
@@ -18,17 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const sortDropdown = document.getElementById('sortDropdown');
 
   if (!gallery || !sortBtn || !sortMenu || !menuBackdrop) {
-    console.warn('Required DOM elements missing: gallery or sort controls.');
+    console.warn('Required DOM elements missing.');
     return;
   }
 
-  let currentSort = 'az'; // az | za | plh | phl
+  let currentSort = 'az';
 
-  // helpers
   function priceToNumber(p) {
-    if (p === null || p === undefined) return NaN;
+    if (p == null) return NaN;
     if (typeof p === 'number') return p;
-    return Number(String(p).replace(/[^0-9.-]+/g, ""));
+    return Number(String(p).replace(/[^0-9.-]+/g, ''));
   }
 
   function createCard(item, index) {
@@ -73,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     card.appendChild(link);
     card.appendChild(info);
-
     return card;
   }
 
@@ -93,18 +87,31 @@ document.addEventListener('DOMContentLoaded', () => {
     return list;
   }
 
-  function updateSort(mode) {
-    currentSort = mode;
-    const labels = { az: 'Sort: A → Z', za: 'Sort: Z → A', plh: 'Sort: Price Low → High', phl: 'Sort: Price High → Low' };
+  function setButtonLabel(mode) {
+    const labels = {
+      az: 'Sort: A → Z',
+      za: 'Sort: Z → A',
+      plh: 'Sort: Price Low → High',
+      phl: 'Sort: Price High → Low'
+    };
     const chev = sortBtn.querySelector('.chev');
     sortBtn.textContent = labels[mode] || 'Sort';
     if (chev) sortBtn.appendChild(chev);
+  }
 
-    // visual selected mark
-    [...sortMenu.querySelectorAll('li')].forEach(li => {
-      li.setAttribute('aria-checked', li.dataset.sort === mode ? 'true' : 'false');
+  function markSelectedInMenu(mode) {
+    const items = Array.from(sortMenu.querySelectorAll('li[data-sort]'));
+    items.forEach(li => {
+      const is = li.dataset.sort === mode;
+      li.setAttribute('aria-checked', is ? 'true' : 'false');
+      if (is) li.classList.add('selected'); else li.classList.remove('selected');
     });
+  }
 
+  function updateSort(mode) {
+    currentSort = mode;
+    setButtonLabel(mode);
+    markSelectedInMenu(mode);
     closeMenu();
     renderList(sortedListBy(mode));
     requestAnimationFrame(() => {
@@ -113,36 +120,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Open/close menu behavior — immediate toggling on click (no hold)
   function openMenu() {
     sortBtn.setAttribute('aria-expanded', 'true');
     sortMenu.setAttribute('aria-hidden', 'false');
-    // show backdrop and immediately enable pointer-events so it blocks underlying links
     menuBackdrop.style.display = 'block';
+    // enable immediately so taps are blocked
     menuBackdrop.style.pointerEvents = 'auto';
-    // ensure menu can receive clicks
     sortMenu.style.pointerEvents = 'auto';
   }
+
   function closeMenu() {
     sortBtn.setAttribute('aria-expanded', 'false');
     sortMenu.setAttribute('aria-hidden', 'true');
-    // disable menu & backdrop pointer events then hide backdrop
     sortMenu.style.pointerEvents = 'none';
     menuBackdrop.style.pointerEvents = 'none';
     requestAnimationFrame(() => { menuBackdrop.style.display = 'none'; });
   }
+
   function toggleMenu() {
-    const isOpen = sortBtn.getAttribute('aria-expanded') === 'true';
-    isOpen ? closeMenu() : openMenu();
+    const open = sortBtn.getAttribute('aria-expanded') === 'true';
+    open ? closeMenu() : openMenu();
   }
 
-  // Click to open/close dropdown (no preventDefault, so normal tap works)
+  // open/close on click (no hold)
   sortBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleMenu();
   });
 
-  // Menu selection via click. Stop propagation so card links don't receive the event.
+  // select option on click; stop propagation so underlying links don't trigger
   sortMenu.addEventListener('click', (e) => {
     e.stopPropagation();
     const li = e.target.closest('li[data-sort]');
@@ -151,14 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mode) updateSort(mode);
   });
 
-  // Backdrop captures pointer events and prevents clicks from reaching cards. Close menu on backdrop interaction.
+  // backdrop blocks and closes
   menuBackdrop.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
     e.preventDefault();
     closeMenu();
   });
 
-  // Fallback: clicking anywhere else closes menu
+  // fallback: close on outside click or Esc
   document.addEventListener('click', (e) => {
     if (!e.target.closest('#sortDropdown')) closeMenu();
   });
@@ -166,16 +172,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') closeMenu();
   });
 
-  // Initial render
-  updateSort(currentSort);
+  // initial setup
+  setButtonLabel(currentSort);
+  markSelectedInMenu(currentSort);
+  renderList(sortedListBy(currentSort));
 
-  // Keyboard nav for gallery (Up/Down)
+  // keyboard nav
   gallery.addEventListener('keydown', (e) => {
     const KEY_UP = 38, KEY_DOWN = 40;
     if (e.keyCode !== KEY_UP && e.keyCode !== KEY_DOWN) return;
     e.preventDefault();
     const cards = Array.from(gallery.querySelectorAll('.card'));
-    if (cards.length === 0) return;
+    if (!cards.length) return;
     const centerY = window.innerHeight / 2;
     let activeIndex = cards.findIndex(c => {
       const r = c.getBoundingClientRect();
@@ -183,13 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (activeIndex === -1) activeIndex = 0;
     const nextIndex = e.keyCode === KEY_DOWN ? Math.min(cards.length - 1, activeIndex + 1) : Math.max(0, activeIndex - 1);
-    cards[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+    cards[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
     cards.forEach(c => c.tabIndex = -1);
     cards[nextIndex].tabIndex = 0;
     cards[nextIndex].focus({ preventScroll: true });
   });
 
-  // Console helper to add gifts
+  // console helper
   window.addGift = function (item) {
     if (!item || !item.name) return;
     GIFTS.push(item);

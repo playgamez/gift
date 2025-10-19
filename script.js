@@ -1,9 +1,10 @@
 // script.js — final, complete, and ready
 document.addEventListener('DOMContentLoaded', () => {
   const GIFTS = [
-    { name: "Wireless Headset Model X", price: "$79", img: "assets/headset.png", url: "https://example.com/product/headset-x", tag: "Audio" },
-    { name: "Black Shower Curtain", price: "$9", img: "assets/shower.jpg", url: "https://www.amazon.com/LLSCL-Curtain-Magnets-Waterproof-Washable/dp/B09TX5WW9T?th=1", tag: "Bathroom" },
    
+    { name: "Black Shower Curtain", price: "$9", img: "assets/shower.jpg", url: "https://www.amazon.com/LLSCL-Curtain-Magnets-Waterproof-Washable/dp/B09TX5WW9T?th=1", tag: "Bathroom" },
+ 
+    { name: "Wireless Gaming Mechanical Keyboard", price: "$79", img: "assets/keyboard.png", url: "https://www.amazon.com/ZORNHER-Wireless-Mechanical-Keyboard-Hot-Swappable/dp/B0DS1SV3R1?th=1", tag: "Gaming" }
   ];
 
   const gallery = document.getElementById('gallery');

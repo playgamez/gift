@@ -18,26 +18,6 @@
     <p class="subtitle">Tap the image to open the link — scroll vertically to browse</p>
   </header>
 
-  <section class="controls">
-    <div class="control-row">
-      <div class="sort-dropdown" id="sortDropdown">
-        <button id="sortBtn" class="sort-btn" aria-expanded="false" aria-haspopup="true">
-          Sort: A → Z
-          <span class="chev">▾</span>
-        </button>
-        <ul id="sortMenu" class="sort-menu" role="menu" aria-hidden="true">
-          <li role="menuitem" data-sort="az">A → Z</li>
-          <li role="menuitem" data-sort="za">Z → A</li>
-          <li role="menuitem" data-sort="plh">Price Low → High</li>
-          <li role="menuitem" data-sort="phl">Price High → Low</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Backdrop to block interactions with cards while menu is open -->
-  <div id="menuBackdrop" aria-hidden="true"></div>
-
   <main class="gallery-wrap" role="main">
     <div id="gallery" class="gallery" role="list" tabindex="0" aria-label="Gift list"></div>
   </main>
@@ -52,15 +32,19 @@
   <script>
     particlesJS("particles-js", {
       "particles": {
-        "number": { "value": 120, "density": { "enable": true, "value_area": 1200 } },
+        "number": { "value": 140, "density": { "enable": true, "value_area": 1300 } },
         "color": { "value": "#ffffff" },
         "shape": { "type": "circle" },
-        "opacity": { "value": 0.85, "random": true },
-        "size": { "value": 5, "random": true },
+        "opacity": { "value": 0.9, "random": true },
+        "size": { "value": 5.5, "random": true },
         "line_linked": { "enable": false },
-        "move": { "enable": true, "speed": 1.2, "direction": "bottom", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+        "move": { "enable": true, "speed": 1.1, "direction": "bottom", "random": true, "straight": false, "out_mode": "out", "bounce": false }
       },
-      "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }, "modes": {} },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true },
+        "modes": {}
+      },
       "retina_detect": true
     });
   </script>

@@ -1,31 +1,18 @@
-// script.js — final fixed version: click to open/close, click an option updates label, marks selected, re-renders
+// script.js — final, complete, and ready
 document.addEventListener('DOMContentLoaded', () => {
   const GIFTS = [
     { name: "Wireless Headset Model X", price: "$79", img: "assets/headset.png", url: "https://example.com/product/headset-x", tag: "Audio" },
-    { name: "E-Reader Slim 7\"", price: "$129", img: "assets/ereader.png", url: "https://example.com/product/ereader-slim", tag: "Reading" },
-    { name: "Cozy Throw Blanket", price: "$49", img: "assets/blanket.png", url: "https://example.com/product/blanket", tag: "Home" },
-    { name: "Wireless Gaming Mechanical Keyboard", price: "$79", img: "assets/keyboard.png", url: "https://www.amazon.com/ZORNHER-Wireless-Mechanical-Keyboard-Hot-Swappable/dp/B0DS1SV3R1?th=1", tag: "Gaming" }
+    { name: "Black Shower Curtain", price: "$9", img: "assets/shower.jpg", url: "https://www.amazon.com/LLSCL-Curtain-Magnets-Waterproof-Washable/dp/B09TX5WW9T?th=1", tag: "Bathroom" },
+   
   ];
 
   const gallery = document.getElementById('gallery');
-  const sortBtn = document.getElementById('sortBtn');
-  const sortMenu = document.getElementById('sortMenu');
-  const menuBackdrop = document.getElementById('menuBackdrop');
-  const sortDropdown = document.getElementById('sortDropdown');
-
-  if (!gallery || !sortBtn || !sortMenu || !menuBackdrop) {
-    console.warn('Required DOM elements missing.');
+  if (!gallery) {
+    console.warn('Gallery element not found.');
     return;
   }
 
-  let currentSort = 'az';
-
-  function priceToNumber(p) {
-    if (p == null) return NaN;
-    if (typeof p === 'number') return p;
-    return Number(String(p).replace(/[^0-9.-]+/g, ''));
-  }
-
+  // Create a single card element
   function createCard(item, index) {
     const card = document.createElement('article');
     card.className = 'card';
@@ -53,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const price = document.createElement('p');
     price.className = 'price';
-    price.textContent = item.price ? item.price : '—';
+    price.textContent = item.price || '—';
 
     const meta = document.createElement('div');
     meta.className = 'meta';
@@ -68,122 +55,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     card.appendChild(link);
     card.appendChild(info);
+
     return card;
   }
 
-  function renderList(list) {
+  // Render all cards
+  function render() {
     gallery.innerHTML = '';
-    list.forEach((g, i) => gallery.appendChild(createCard(g, i)));
+    GIFTS.forEach((g, i) => gallery.appendChild(createCard(g, i)));
     const first = gallery.querySelector('.card');
     if (first) first.tabIndex = 0;
   }
 
-  function sortedListBy(mode) {
-    const list = GIFTS.slice();
-    if (mode === 'az') return list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-    if (mode === 'za') return list.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
-    if (mode === 'plh') return list.sort((a, b) => (priceToNumber(a.price) || 0) - (priceToNumber(b.price) || 0));
-    if (mode === 'phl') return list.sort((a, b) => (priceToNumber(b.price) || 0) - (priceToNumber(a.price) || 0));
-    return list;
-  }
-
-  function setButtonLabel(mode) {
-    const labels = {
-      az: 'Sort: A → Z',
-      za: 'Sort: Z → A',
-      plh: 'Sort: Price Low → High',
-      phl: 'Sort: Price High → Low'
-    };
-    const chev = sortBtn.querySelector('.chev');
-    sortBtn.textContent = labels[mode] || 'Sort';
-    if (chev) sortBtn.appendChild(chev);
-  }
-
-  function markSelectedInMenu(mode) {
-    const items = Array.from(sortMenu.querySelectorAll('li[data-sort]'));
-    items.forEach(li => {
-      const is = li.dataset.sort === mode;
-      li.setAttribute('aria-checked', is ? 'true' : 'false');
-      if (is) li.classList.add('selected'); else li.classList.remove('selected');
-    });
-  }
-
-  function updateSort(mode) {
-    currentSort = mode;
-    setButtonLabel(mode);
-    markSelectedInMenu(mode);
-    closeMenu();
-    renderList(sortedListBy(mode));
-    requestAnimationFrame(() => {
-      const first = gallery.querySelector('.card');
-      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-  }
-
-  function openMenu() {
-    sortBtn.setAttribute('aria-expanded', 'true');
-    sortMenu.setAttribute('aria-hidden', 'false');
-    menuBackdrop.style.display = 'block';
-    // enable immediately so taps are blocked
-    menuBackdrop.style.pointerEvents = 'auto';
-    sortMenu.style.pointerEvents = 'auto';
-  }
-
-  function closeMenu() {
-    sortBtn.setAttribute('aria-expanded', 'false');
-    sortMenu.setAttribute('aria-hidden', 'true');
-    sortMenu.style.pointerEvents = 'none';
-    menuBackdrop.style.pointerEvents = 'none';
-    requestAnimationFrame(() => { menuBackdrop.style.display = 'none'; });
-  }
-
-  function toggleMenu() {
-    const open = sortBtn.getAttribute('aria-expanded') === 'true';
-    open ? closeMenu() : openMenu();
-  }
-
-  // open/close on click (no hold)
-  sortBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleMenu();
-  });
-
-  // select option on click; stop propagation so underlying links don't trigger
-  sortMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const li = e.target.closest('li[data-sort]');
-    if (!li) return;
-    const mode = li.dataset.sort;
-    if (mode) updateSort(mode);
-  });
-
-  // backdrop blocks and closes
-  menuBackdrop.addEventListener('pointerdown', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    closeMenu();
-  });
-
-  // fallback: close on outside click or Esc
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#sortDropdown')) closeMenu();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
-  });
-
-  // initial setup
-  setButtonLabel(currentSort);
-  markSelectedInMenu(currentSort);
-  renderList(sortedListBy(currentSort));
-
-  // keyboard nav
+  // Keyboard navigation: Up / Down arrows to move between cards
   gallery.addEventListener('keydown', (e) => {
     const KEY_UP = 38, KEY_DOWN = 40;
     if (e.keyCode !== KEY_UP && e.keyCode !== KEY_DOWN) return;
     e.preventDefault();
     const cards = Array.from(gallery.querySelectorAll('.card'));
-    if (!cards.length) return;
+    if (cards.length === 0) return;
     const centerY = window.innerHeight / 2;
     let activeIndex = cards.findIndex(c => {
       const r = c.getBoundingClientRect();
@@ -197,11 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
     cards[nextIndex].focus({ preventScroll: true });
   });
 
-  // console helper
-  window.addGift = function (item) {
+  // Expose helper to add new gift programmatically and re-render
+  window.addGift = function(item) {
     if (!item || !item.name) return;
     GIFTS.push(item);
-    updateSort(currentSort);
+    render();
   };
   window.GIFTS = GIFTS;
+
+  render();
 });

@@ -1,4 +1,4 @@
-// === GIFTS array: edit to add or remove items (price should be a string like "$79" or "79") ===
+// Simple GIFTS array — edit to add items. Price strings accepted like "$79" or "79".
 const GIFTS = [
   { name: "Wireless Headset Model X", price: "$79", img: "assets/headset.png", url: "https://example.com/product/headset-x", tag: "Audio" },
   { name: "E-Reader Slim 7\"", price: "$129", img: "assets/ereader.png", url: "https://example.com/product/ereader-slim", tag: "Reading" },
@@ -6,24 +6,19 @@ const GIFTS = [
 ];
 
 const gallery = document.getElementById('gallery');
+const sortBtn = document.getElementById('sortBtn');
+const sortMenu = document.getElementById('sortMenu');
+const sortDropdown = document.getElementById('sortDropdown');
 
-// FILTER STATE
-let filterState = {
-  q: '',
-  minPrice: null,
-  maxPrice: null,
-  sort: 'az' // az | za | plh | phl
-};
+let currentSort = 'az'; // default
 
-// UTIL: parse price string into number (strip $ and commas). Returns NaN if not parseable.
+// helper: parse price string to number
 function priceToNumber(p){
   if(p === null || p === undefined) return NaN;
   if(typeof p === 'number') return p;
   return Number(String(p).replace(/[^0-9.-]+/g,""));
 }
 
-// Create a card element (same as before), add index var for animation delay.
-// Keep this consistent with previous markup.
 function createCard(item, index){
   const card = document.createElement('article');
   card.className = 'card';
@@ -70,7 +65,6 @@ function createCard(item, index){
   return card;
 }
 
-// Render accepts an array of items to show
 function renderList(list){
   gallery.innerHTML = '';
   list.forEach((g, i) => gallery.appendChild(createCard(g, i)));
@@ -78,118 +72,70 @@ function renderList(list){
   if(first) first.tabIndex = 0;
 }
 
-// Apply filters and sorting to GIFTS and render
-function applyFilters(){
-  // start from original list
-  let list = GIFTS.slice();
-
-  // text search
-  const q = filterState.q.trim().toLowerCase();
-  if(q){
-    list = list.filter(i => (i.name || '').toLowerCase().includes(q));
-  }
-
-  // price filtering
-  const min = Number(filterState.minPrice);
-  const max = Number(filterState.maxPrice);
-  if(!isNaN(min)){
-    list = list.filter(i => {
-      const v = priceToNumber(i.price);
-      return !isNaN(v) ? v >= min : false;
-    });
-  }
-  if(!isNaN(max)){
-    list = list.filter(i => {
-      const v = priceToNumber(i.price);
-      return !isNaN(v) ? v <= max : false;
-    });
-  }
-
-  // sorting
-  list.sort((a,b) => {
-    if(filterState.sort === 'az') return (a.name||'').localeCompare(b.name||'');
-    if(filterState.sort === 'za') return (b.name||'').localeCompare(a.name||'');
-    if(filterState.sort === 'plh') return (priceToNumber(a.price) || 0) - (priceToNumber(b.price) || 0);
-    if(filterState.sort === 'phl') return (priceToNumber(b.price) || 0) - (priceToNumber(a.price) || 0);
-    return 0;
-  });
-
-  renderList(list);
+// sorting logic
+function sortedListBy(mode){
+  const list = GIFTS.slice();
+  if(mode === 'az') return list.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  if(mode === 'za') return list.sort((a,b)=> (b.name||'').localeCompare(a.name||''));
+  if(mode === 'plh') return list.sort((a,b)=> (priceToNumber(a.price)||0) - (priceToNumber(b.price)||0));
+  if(mode === 'phl') return list.sort((a,b)=> (priceToNumber(b.price)||0) - (priceToNumber(a.price)||0));
+  return list;
 }
 
-// ===== Setup filter UI bindings =====
-const searchName = document.getElementById('searchName');
-const minPrice = document.getElementById('minPrice');
-const maxPrice = document.getElementById('maxPrice');
-const sortSelect = document.getElementById('sortSelect');
-const dropdownMenu = document.querySelector('.dropdown-menu');
-const clearBtn = document.getElementById('clearFilters');
-
-searchName.addEventListener('input', (e) => {
-  filterState.q = e.target.value;
-  applyFilters();
-});
-
-[minPrice, maxPrice].forEach(inp => {
-  inp.addEventListener('input', () => {
-    const vMin = minPrice.value.trim();
-    const vMax = maxPrice.value.trim();
-    filterState.minPrice = vMin === '' ? null : Number(vMin);
-    filterState.maxPrice = vMax === '' ? null : Number(vMax);
-    applyFilters();
+// update display according to currentSort
+function updateSort(mode){
+  currentSort = mode;
+  const labels = { az: 'Sort: A → Z', za: 'Sort: Z → A', plh: 'Sort: Price Low → High', phl: 'Sort: Price High → Low' };
+  sortBtn.childNodes[0].textContent = labels[mode] || 'Sort';
+  closeMenu();
+  renderList(sortedListBy(mode));
+  // after render, snap first card into view for a polished feel
+  requestAnimationFrame(()=> {
+    const first = gallery.querySelector('.card');
+    if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
   });
+}
+
+// dropdown open/close helpers
+function openMenu(){
+  sortBtn.setAttribute('aria-expanded','true');
+  sortMenu.setAttribute('aria-hidden','false');
+}
+function closeMenu(){
+  sortBtn.setAttribute('aria-expanded','false');
+  sortMenu.setAttribute('aria-hidden','true');
+}
+function toggleMenu(){
+  const isOpen = sortBtn.getAttribute('aria-expanded') === 'true';
+  isOpen ? closeMenu() : openMenu();
+}
+
+// bind dropdown button
+sortBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleMenu();
 });
 
-// Dropdown open/close
-sortSelect.addEventListener('click', () => {
-  const expanded = sortSelect.getAttribute('aria-expanded') === 'true';
-  sortSelect.setAttribute('aria-expanded', String(!expanded));
-  dropdownMenu.setAttribute('aria-hidden', String(expanded));
-});
-
-// Choose sort option
-dropdownMenu.addEventListener('click', (e) => {
+// delegate menu selection
+sortMenu.addEventListener('click', (e) => {
   const li = e.target.closest('li[data-sort]');
   if(!li) return;
-  const sortVal = li.dataset.sort;
-  filterState.sort = sortVal;
-  // update button label
-  const labels = { az: 'A → Z ▾', za: 'Z → A ▾', plh: 'Price Low → High ▾', phl: 'Price High → Low ▾' };
-  sortSelect.textContent = labels[sortVal] || 'Sort ▾';
-  // close menu
-  sortSelect.setAttribute('aria-expanded', 'false');
-  dropdownMenu.setAttribute('aria-hidden', 'true');
-  applyFilters();
+  const mode = li.dataset.sort;
+  updateSort(mode);
 });
 
-// Close menu if click outside or esc
+// close when clicking outside or pressing Escape
 document.addEventListener('click', (e) => {
-  if(!e.target.closest('.dropdown')) {
-    sortSelect.setAttribute('aria-expanded', 'false');
-    dropdownMenu.setAttribute('aria-hidden', 'true');
-  }
+  if(!e.target.closest('#sortDropdown')) closeMenu();
 });
 document.addEventListener('keydown', (e) => {
-  if(e.key === 'Escape') {
-    sortSelect.setAttribute('aria-expanded', 'false');
-    dropdownMenu.setAttribute('aria-hidden', 'true');
-  }
+  if(e.key === 'Escape') closeMenu();
 });
 
-// clear filters
-clearBtn.addEventListener('click', () => {
-  searchName.value = '';
-  minPrice.value = '';
-  maxPrice.value = '';
-  filterState = { q: '', minPrice: null, maxPrice: null, sort: 'az' };
-  sortSelect.textContent = 'A → Z ▾';
-  applyFilters();
-});
+// initial render with default sort
+updateSort(currentSort);
 
-// initial render
-applyFilters();
-
-// keyboard navigation for gallery (same behavior you had)
+// keyboard navigation for gallery (up/down)
 gallery.addEventListener('keydown', (e) => {
   const KEY_UP = 38, KEY_DOWN = 40;
   if(e.keyCode !== KEY_UP && e.keyCode !== KEY_DOWN) return;

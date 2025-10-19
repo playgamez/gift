@@ -18,38 +18,19 @@
     <p class="subtitle">Tap the image to open the link — scroll vertically to browse</p>
   </header>
 
-  <!-- FILTER BAR -->
-  <section class="filter-bar" aria-label="Filters">
-    <div class="filter-row">
-      <div class="filter-group">
-        <label for="searchName" class="label">Search</label>
-        <input id="searchName" class="input" type="search" placeholder="Search name A–Z" />
-      </div>
-
-      <div class="filter-group">
-        <label class="label">Price range</label>
-        <div class="range-row">
-          <input id="minPrice" class="input small" type="number" min="0" placeholder="Min" />
-          <span class="sep">—</span>
-          <input id="maxPrice" class="input small" type="number" min="0" placeholder="Max" />
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <label for="sortSelect" class="label">Sort</label>
-        <div class="dropdown">
-          <button id="sortSelect" class="dropdown-btn" aria-expanded="false">A → Z ▾</button>
-          <ul class="dropdown-menu" role="menu" aria-hidden="true">
-            <li role="menuitem" data-sort="az">A → Z</li>
-            <li role="menuitem" data-sort="za">Z → A</li>
-            <li role="menuitem" data-sort="plh">Price Low → High</li>
-            <li role="menuitem" data-sort="phl">Price High → Low</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="filter-group actions">
-        <button id="clearFilters" class="btn">Clear</button>
+  <section class="controls">
+    <div class="control-row">
+      <div class="sort-dropdown" id="sortDropdown">
+        <button id="sortBtn" class="sort-btn" aria-expanded="false" aria-haspopup="true">
+          Sort: A → Z
+          <span class="chev">▾</span>
+        </button>
+        <ul id="sortMenu" class="sort-menu" role="menu" aria-hidden="true">
+          <li role="menuitem" data-sort="az">A → Z</li>
+          <li role="menuitem" data-sort="za">Z → A</li>
+          <li role="menuitem" data-sort="plh">Price Low → High</li>
+          <li role="menuitem" data-sort="phl">Price High → Low</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -64,9 +45,20 @@
 
   <script src="https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/particles.min.js"></script>
   <script src="script.js"></script>
+
   <script>
     particlesJS("particles-js", {
-      "particles": { "number": { "value": 120, "density": { "enable": true, "value_area": 1200 } }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.85, "random": true }, "size": { "value": 5, "random": true }, "line_linked": { "enable": false }, "move": { "enable": true, "speed": 1.2, "direction": "bottom", "random": true, "straight": false, "out_mode": "out", "bounce": false } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }, "modes": {} }, "retina_detect": true
+      "particles": {
+        "number": { "value": 120, "density": { "enable": true, "value_area": 1200 } },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.85, "random": true },
+        "size": { "value": 5, "random": true },
+        "line_linked": { "enable": false },
+        "move": { "enable": true, "speed": 1.2, "direction": "bottom", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+      },
+      "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }, "modes": {} },
+      "retina_detect": true
     });
   </script>
 </body>

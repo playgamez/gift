@@ -1,10 +1,11 @@
-// script.js — complete, self-contained, prevents click-through to underlying cards
+// script.js — final, complete, and functional
 document.addEventListener('DOMContentLoaded', () => {
   // === GIFTS array: edit to add or remove items (price should be a string like "$79" or "79") ===
   const GIFTS = [
-    { name: "Wireless Gaming Mechanical Keyboard", price: "$79", img: "assets/keyboard.png", url: "https://www.amazon.com/ZORNHER-Wireless-Mechanical-Keyboard-Hot-Swappable/dp/B0DS1SV3R1?th=1", tag: "Gaming" },
+    { name: "Wireless Headset Model X", price: "$79", img: "assets/headset.png", url: "https://example.com/product/headset-x", tag: "Audio" },
     { name: "E-Reader Slim 7\"", price: "$129", img: "assets/ereader.png", url: "https://example.com/product/ereader-slim", tag: "Reading" },
-    { name: "Cozy Throw Blanket", price: "$49", img: "assets/blanket.png", url: "https://example.com/product/blanket", tag: "Home" }
+    { name: "Cozy Throw Blanket", price: "$49", img: "assets/blanket.png", url: "https://example.com/product/blanket", tag: "Home" },
+    { name: "Wireless Gaming Mechanical Keyboard", price: "$79", img: "assets/keyboard.png", url: "https://www.amazon.com/ZORNHER-Wireless-Mechanical-Keyboard-Hot-Swappable/dp/B0DS1SV3R1?th=1", tag: "Gaming" }
   ];
 
   // DOM refs
@@ -101,30 +102,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const chev = sortBtn.querySelector('.chev');
     sortBtn.textContent = labels[mode] || 'Sort';
     if(chev) sortBtn.appendChild(chev);
+
+    // mark selected visually on menu
+    [...sortMenu.querySelectorAll('li')].forEach(li => {
+      li.setAttribute('aria-checked', li.dataset.sort === mode ? 'true' : 'false');
+    });
+
     closeMenu();
     renderList(sortedListBy(mode));
-    // smooth snap first card into view for polish
     requestAnimationFrame(()=> {
       const first = gallery.querySelector('.card');
       if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
     });
   }
 
-  // open/close menu with robust pointer handling to prevent click-through
+  // open/close menu; use click interactions
   function openMenu(){
     sortBtn.setAttribute('aria-expanded','true');
     sortMenu.setAttribute('aria-hidden','false');
-    // show backdrop and enable pointer events so it captures taps immediately
     menuBackdrop.style.display = 'block';
-    // allow a frame, then enable pointer events — prevents the opening tap from leaking
     requestAnimationFrame(() => { menuBackdrop.style.pointerEvents = 'auto'; });
-    // ensure menu pointer-events enabled
     sortMenu.style.pointerEvents = 'auto';
   }
   function closeMenu(){
     sortBtn.setAttribute('aria-expanded','false');
     sortMenu.setAttribute('aria-hidden','true');
-    // disable pointer events and hide backdrop after a frame for smoothness
     menuBackdrop.style.pointerEvents = 'none';
     requestAnimationFrame(() => { menuBackdrop.style.display = 'none'; });
     sortMenu.style.pointerEvents = 'none';
@@ -134,31 +136,29 @@ document.addEventListener('DOMContentLoaded', () => {
     isOpen ? closeMenu() : openMenu();
   }
 
-  // intercept pointerdown on button to avoid immediate click-through on touch devices
-  sortBtn.addEventListener('pointerdown', (e) => {
+  // Use click to open/close (so normal taps work without hold)
+  sortBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    e.preventDefault();
     toggleMenu();
   });
 
-  // menu captures pointerdown for selection; use pointerdown to handle touch before click reaches cards
-  sortMenu.addEventListener('pointerdown', (e) => {
+  // Menu items: use click to select (stops propagation so underlying links don't fire)
+  sortMenu.addEventListener('click', (e) => {
     e.stopPropagation();
-    // if a menu item was pressed, handle it
     const li = e.target.closest('li[data-sort]');
     if(!li) return;
     const mode = li.dataset.sort;
     if(mode) updateSort(mode);
   });
 
-  // backdrop captures pointerdown and closes menu; prevents taps reaching cards
+  // Backdrop captures clicks/taps outside menu and closes the menu; prevents clicks from reaching cards
   menuBackdrop.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
     e.preventDefault();
     closeMenu();
   });
 
-  // fallback: clicks outside dropdown close it
+  // fallback close on outside clicks and Escape
   document.addEventListener('click', (e) => {
     if(!e.target.closest('#sortDropdown')) closeMenu();
   });

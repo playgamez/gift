@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: "Live Desk Plant / Plant Port", price: "$25", img: "assets/plant.png", url: "https://www.walmart.com/ip/American-Plant-Exchange-Spider-Plant-6-Inch-Pot-Ultimate-Easy-Care-Beginners-Houseplant-Fuss-Free-Live-Plant/5093084817?wmlspartner=wlpa&selectedSellerId=101459269", tag: "Room" },
 
     { name: "Tv Soundbar ", price: "$35", img: "assets/sound.png", url: "https://www.bestbuy.com/product/ilive-29-inch-bluetooth-soundbar-black/J7GWZ457LW/sku/6522227?utm_source=feed", tag: "Room" },
-
+    { name: "Lego Bonsai ", price: "$55", img: "assets/lego.png", url: "https://www.lego.com/en-us/themes/adults-welcome/botanical-collection/bonsai-tree", tag: "Room" },
    
   ];
 

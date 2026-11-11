@@ -65,8 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
       img: "assets/gum.jpg",
       url: "https://www.amazon.com/dp/B085S4PT6X",
       tag: "Amazon"
-    }
+    },
 
+    {
+      name: "Lego Koenigsegg Jesko",
+      price: "$39.99",
+      img: "assets/lego.jpg",
+      url: "https://www.walmart.com/ip/LEGO-Technic-Koenigsegg-Jesko-Absolut-Grey-Hypercar-Sports-Car-Building-Toy-Set-Boys-Girls-Vehicle-Racing-Kids-Buildable-Model-Kit-Sport-Toy-Motor-En/5305163212",
+      tag: "Toys"
+    }
   ];
 
   const gallery = document.getElementById('gallery');

@@ -84,6 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     {
+      name: "Monster Energy Drinks",
+      price: "$10",
+      img: "assets/Monster.png",
+      url: "",
+      tag: "Mini Fridge"
+    },
+
+    {
       name: "Black Pillow Cases",
       price: "$11",
       img: "assets/pillow.png",
@@ -98,6 +106,22 @@ document.addEventListener('DOMContentLoaded', () => {
       url: "https://www.target.com/p/xbox-play-and-charge/-/A-80744782?sid=1299S&TCID=PDS-336247729&gclsrc=aw.ds&ds_rl=1246978&ds_rl=1248099&gad_source=1&gad_campaignid=336247729&gclid=CjwKCAiAquDXBhApEiwAoyNqBL0wvzHn-OE3_XEaZzqS-n5rhLrd35gdWAUEuVPA0-QlZaYEJk6L_hoCsKwQAvD_BwE",
       tag: "Tech"
     },
+
+    {
+      name: "Hyaluronic Acid Serum",
+      price: "$10",
+      img: "assets/hyaluronic.png",
+      url: "https://www.amazon.com/Ordinary-Hyaluronic-Acid-2-30ml/dp/B01MYEZPC8",
+      tag: "Face"
+    },   
+    
+    {
+      name: "Azelaic Acid",
+      price: "$13",
+      img: "assets/azelaic.png",
+      url: "https://theordinary.com/en-us/azelaic-acid-suspension-10-exfoliator-100407.html?dwvar_100407_size=30ml&quantity=1",
+      tag: "Face"
+    },  
 
     {
       name: "Lego Koenigsegg Jesko",

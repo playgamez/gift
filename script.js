@@ -68,6 +68,38 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     {
+      name: "4x Wood Wall Accoustic Panels",
+      price: "$56",
+      img: "assets/panel.png",
+      url: "https://www.target.com/p/homcom-24-x-24-4-pack-wood-wall-panels-for-sound-absorbing-acoustic-wood-panels-for-interior-wall-decor-ceiling/-/A-92919217?preselect=92880897#lnk=sametabX",
+      tag: "Amazon"
+    },
+
+    {
+      name: "Fix Broken Old Phone",
+      price: "$??",
+      img: "assets/phone.png",
+      url: "",
+      tag: "Amazon"
+    },
+
+    {
+      name: "Black Pillow Cases",
+      price: "$11",
+      img: "assets/pillow.png",
+      url: "https://www.target.com/p/black-pillow-cases-queen-size-2-pack-rayon-from-bamboo-cooling-pillowcases/-/A-91938288?sid=&TCID=PDS-23938942257&gclsrc=aw.ds&gad_source=1&gad_campaignid=23938953087&gclid=CjwKCAiAquDXBhApEiwAoyNqBIuT7QMYzlOA42KivcnyMEO0n7LXsBVRL2mbu0LqOj7eZ4cTYlhcOxoC59cQAvD_BwE",
+      tag: "Bed"
+    },
+
+    {
+      name: "Xbox Recharable battery pack",
+      price: "$19",
+      img: "assets/xbox.png",
+      url: "https://www.target.com/p/xbox-play-and-charge/-/A-80744782?sid=1299S&TCID=PDS-336247729&gclsrc=aw.ds&ds_rl=1246978&ds_rl=1248099&gad_source=1&gad_campaignid=336247729&gclid=CjwKCAiAquDXBhApEiwAoyNqBL0wvzHn-OE3_XEaZzqS-n5rhLrd35gdWAUEuVPA0-QlZaYEJk6L_hoCsKwQAvD_BwE",
+      tag: "Tech"
+    },
+
+    {
       name: "Lego Koenigsegg Jesko",
       price: "$39.99",
       img: "assets/lego.jpg",
